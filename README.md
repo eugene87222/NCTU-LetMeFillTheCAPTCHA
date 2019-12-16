@@ -1,7 +1,7 @@
 # Let me help you to fill the CAPTCHA
 
 ```
-/
+./
 ├── Download/
 │   ├── Partition/
 │   │   ├── 3/
