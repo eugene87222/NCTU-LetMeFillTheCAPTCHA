@@ -10,6 +10,7 @@ from selenium import webdriver
 def openWebsite():
     driver = webdriver.Firefox()
     driver.get("https://course.nctu.edu.tw/")
+    driver.set_window_size(1295, 704)
     return driver
 
 def getScreenshot(driver):
@@ -61,7 +62,7 @@ if __name__ == '__main__':
     screenshot = getScreenshot(driver)
     print('Screenshot')
 
-    x, y, w, h = [834, 492, 150, 75]
+    x, y, w, h = [836, 484, 150, 75]
     CAPTCHA = screenshot[y:y+h, x:x+w]
 
     print('Start parsing')
@@ -70,6 +71,7 @@ if __name__ == '__main__':
     
     model = train.loadModel('SVM_v2.sav')
     answer = getAnswer(model, digits)
+    print(answer)
 
     login(driver, ID, passwd, answer)
     print('Log in')

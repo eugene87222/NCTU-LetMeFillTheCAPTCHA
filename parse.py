@@ -4,8 +4,11 @@ import os, cv2, configparser
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-def show(image, size=(960, 480)):
-    cv2.imshow('', cv2.resize(image, size))
+def show(image, size=None):
+    if size:
+        cv2.imshow('', cv2.resize(image, size))
+    else:
+        cv2.imshow('', image)
     cv2.waitKey()
 
 def toGray(image):
@@ -64,17 +67,17 @@ def mergeContours(contours):
         final_contours = merge(contours)
         final_contours = merge(final_contours)
         final_contours = eraseSmall(final_contours)
+        print(final_contours)
         contours = final_contours
         if len(final_contours) <= 5:
             break
-    print(final_contours)
     return final_contours
 
 def validContour(contours):
     valid = []
     for c in contours:
         x, y, w, h = cv2.boundingRect(c)
-        if (w < 8 and h < 8) or (w > 25 and h > 25):
+        if (w < 8 and h < 8) or (w > 25 and h > 25) or w > 40 or h > 40:
             continue
         valid.append((x, y, w, h))
     return valid
