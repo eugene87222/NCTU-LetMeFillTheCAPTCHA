@@ -1,8 +1,5 @@
 # Let me help you to fill the CAPTCHA
 
-https://drive.google.com/open?id=1hnARadcYP3_0T-LRBHVdKUnI8JBnC4kd
-
-
 ```
 ./
 ├── Download/
@@ -30,3 +27,4 @@ https://drive.google.com/open?id=1hnARadcYP3_0T-LRBHVdKUnI8JBnC4kd
 ├── toolkit.py
 └── train.py
 ```
+Since size of `Download` folder is a little big, the zipped `Donwload` can be downloaded [here](https://drive.google.com/open?id=1hnARadcYP3_0T-LRBHVdKUnI8JBnC4kd)
