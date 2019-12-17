@@ -27,4 +27,14 @@
 ├── toolkit.py
 └── train.py
 ```
-Since size of `Download` folder is a little big, the zipped `Donwload` can be downloaded [here](https://drive.google.com/open?id=1hnARadcYP3_0T-LRBHVdKUnI8JBnC4kd)
+> Since size of `Download` folder is a little big, the zipped `Donwload` can be downloaded [here](https://drive.google.com/open?id=1hnARadcYP3_0T-LRBHVdKUnI8JBnC4kd)
+
+## Requirement
+
+- python3 >= 3.6.4
+- `pip3 install numpy opencv-python scikit-learn selenium Pillow`
+
+## Usage
+```
+python3 login.py
+```
