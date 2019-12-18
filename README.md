@@ -33,6 +33,7 @@
 
 - python3 >= 3.6.4
 - `pip3 install numpy opencv-python scikit-learn selenium Pillow`
+    - Remember to download the selenium webdriver [here](https://selenium.dev/documentation/en/webdriver/driver_requirements/#quick-reference)
 
 ## Usage
 ```
