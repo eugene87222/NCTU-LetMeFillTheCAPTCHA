@@ -3,10 +3,7 @@ parseImage -> crop the original CAPTCHA into five digits
 """
 
 import numpy as np
-import os, cv2, configparser
-
-config = configparser.ConfigParser()
-config.read('config.ini')
+import os, cv2
 
 def show(image, size=None):
     if size:
@@ -86,13 +83,10 @@ def validContour(contours):
         valid.append((x, y, w, h))
     return valid
 
-def parseImage(file, save2Partition, showContours):
-    if save2Partition and not os.path.exists(config['PATH']['PARTITION']):
-        os.makedirs(config['PATH']['PARTITION'])
-
+def parseImage(file, showContours):
     img = file
     if isinstance(file, str):
-        img = cv2.imread(f"{config['PATH']['DOWNLOAD']}/{file}.jpg")
+        img = cv2.imread(file)
     
     img = cv2.resize(img, (100, 50))
     
@@ -115,8 +109,7 @@ def parseImage(file, save2Partition, showContours):
         digit = cv2.cvtColor(digit, cv2.COLOR_BGR2GRAY)
         digit = cv2.threshold(digit, 170, 255, cv2.THRESH_BINARY)[1]
         digits.append(digit)
-        if save2Partition:
-            cv2.imwrite(f"{config['PATH']['PARTITION']}/{file}_{i}.jpg", digit)
+        cv2.imwrite(f"{i}.jpg", digit)
         cv2.rectangle(img, (x, y), (x+w, y+h), (0, 255, 0), 1)
     
     if showContours:
