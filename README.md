@@ -27,7 +27,7 @@
 ├── toolkit.py
 └── train.py
 ```
-> Since size of `Download` folder is a little big, the zipped `Donwload` can be downloaded [here](https://drive.google.com/open?id=1hnARadcYP3_0T-LRBHVdKUnI8JBnC4kd)
+> Since size of `Download` folder is a little big, I am not going to upload the whole folder to github. The zipped `Donwload` can be downloaded [here](https://drive.google.com/open?id=1hnARadcYP3_0T-LRBHVdKUnI8JBnC4kd)
 
 ## Requirement
 
