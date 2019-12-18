@@ -23,8 +23,8 @@ def train(saveModel, modelName=''):
     X = []
     y = []
     for i in range(3, 10):
-        for filename in os.listdir(f"{config['PATH']['PARTITION']}/{i}"):
-            img = openImage(f"{config['PATH']['PARTITION']}/{i}/{filename}")
+        for filename in os.listdir(f"{config['PATH']['TRAINING']}/{i}"):
+            img = openImage(f"{config['PATH']['TRAINING']}/{i}/{filename}")
             X.append(img)
             y.append(i)
     model = svm.SVC()
