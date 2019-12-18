@@ -1,3 +1,11 @@
+"""
+openImage -> open image with given file name
+
+train -> train a SVC model with the pictures under the directory specified in `config.ini`
+
+loadModel -> load the pickle file
+"""
+
 import numpy as np
 from sklearn import svm
 import os, cv2, pickle, configparser

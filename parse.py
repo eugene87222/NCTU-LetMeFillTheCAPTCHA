@@ -1,3 +1,7 @@
+"""
+parseImage -> crop the original CAPTCHA into five digits
+"""
+
 import numpy as np
 import os, cv2, configparser
 
