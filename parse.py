@@ -34,19 +34,20 @@ def merge(contours):
     for i in range(len(boxes)):
         if status[i]:
             continue
-        for j in range(i + 1, len(boxes)):
-            intersect = np.logical_and(boxes[i], boxes[j])
-            if True in intersect:
-                x = min(contours[i][0], contours[j][0])
-                y = min(contours[i][1], contours[j][1])
-                w = max(contours[i][0] + contours[i][2], contours[j][0] + contours[j][2]) - x
-                h = max(contours[i][1] + contours[i][3], contours[j][1] + contours[j][3]) - y
-                if w > 20 or h > 20:
-                    continue
+        if i == len(boxes) - 1:
+            status[i] = 1
+            intermediate.append(contours[i])
+            continue
+        intersect = np.logical_and(boxes[i], boxes[i + 1])
+        if True in intersect:
+            x = min(contours[i][0], contours[i + 1][0])
+            y = min(contours[i][1], contours[i + 1][1])
+            w = max(contours[i][0] + contours[i][2], contours[i + 1][0] + contours[i + 1][2]) - x
+            h = max(contours[i][1] + contours[i][3], contours[i + 1][1] + contours[i + 1][3]) - y
+            if w <= 20 and h <= 20:
                 status[i] = 1
-                status[j] = 1
+                status[i + 1] = 1
                 intermediate.append((x, y, w, h))
-                break
         if status[i] != 1:
             status[i] = 1
             intermediate.append(contours[i])
@@ -109,7 +110,7 @@ def parseImage(file, save2Partition, showContours):
     contours, hierarchy = cv2.findContours(img_blur_gray, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     
     contours = validContour(contours)
-
+    
     print('merge...')
     contours = mergeContours(img, contours)
     print('merge done...')
