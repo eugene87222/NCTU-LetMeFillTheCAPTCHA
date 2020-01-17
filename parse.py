@@ -3,7 +3,10 @@ parseImage -> crop the original CAPTCHA into five digits
 """
 
 import numpy as np
-import os, cv2
+import os, cv2, configparser
+
+config = configparser.ConfigParser()
+config.read('config.ini')
 
 def show(image, size=None):
     if size:
@@ -58,16 +61,21 @@ def merge(contours):
 def eraseSmall(contours):
     valid = []
     for c in contours:
-        if c[2] < 8  or c[3] < 8:
+        if c[2] < 12  or c[3] < 12:
             continue
         valid.append(c)
     return valid
 
-def mergeContours(contours):
+def mergeContours(image, contours):
     while 1:
         final_contours = merge(contours)
         final_contours = merge(final_contours)
         final_contours = eraseSmall(final_contours)
+        temp = np.array(image)
+        for i in range(len(final_contours)):
+            x, y, w, h = final_contours[i]
+            cv2.rectangle(temp, (x, y), (x+w, y+h), (0, 255, 0), 1)
+        show(temp)
         print(final_contours)
         contours = final_contours
         if len(final_contours) <= 5:
@@ -83,22 +91,25 @@ def validContour(contours):
         valid.append((x, y, w, h))
     return valid
 
-def parseImage(file, showContours):
+def parseImage(file, save2Partition, showContours):
+    if save2Partition and not os.path.exists(config['PATH']['PARTITION']):
+        os.makedirs(config['PATH']['PARTITION'])
+
     img = file
     if isinstance(file, str):
-        img = cv2.imread(file)
+        img = cv2.imread(f"{config['PATH']['DOWNLOAD']}/{file}.jpg")
     
     img = cv2.resize(img, (100, 50))
     
     img = cv2.copyMakeBorder(img, 5, 5, 5, 5, cv2.BORDER_CONSTANT, value=(255, 255, 255))
     img_gray = toGray(img)
     img_blur = cv2.medianBlur(img, 3)
-    img_blur_gray = toGray(img_blur)
+    img_blur_gray = cv2.threshold(img_blur, 170, 255, cv2.THRESH_BINARY)[1]
     
     contours, hierarchy = cv2.findContours(img_blur_gray, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     
     contours = validContour(contours)
-    contours = mergeContours(contours)
+    contours = mergeContours(img, contours)
     
     img_gray = cv2.cvtColor(img_gray, cv2.COLOR_GRAY2BGR)
     digits = []
@@ -109,7 +120,8 @@ def parseImage(file, showContours):
         digit = cv2.cvtColor(digit, cv2.COLOR_BGR2GRAY)
         digit = cv2.threshold(digit, 170, 255, cv2.THRESH_BINARY)[1]
         digits.append(digit)
-        cv2.imwrite(f"{i}.jpg", digit)
+        if save2Partition:
+            cv2.imwrite(f"{config['PATH']['PARTITION']}/{file}_{i}.jpg", digit)
         cv2.rectangle(img, (x, y), (x+w, y+h), (0, 255, 0), 1)
     
     if showContours:
@@ -118,4 +130,3 @@ def parseImage(file, showContours):
             show(digit)
     
     return digits
-    
