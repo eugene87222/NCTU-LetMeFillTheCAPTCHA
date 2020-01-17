@@ -103,13 +103,16 @@ def parseImage(file, save2Partition, showContours):
     
     img = cv2.copyMakeBorder(img, 5, 5, 5, 5, cv2.BORDER_CONSTANT, value=(255, 255, 255))
     img_gray = toGray(img)
-    img_blur = cv2.medianBlur(img, 3)
+    img_blur = cv2.medianBlur(img_gray, 3)
     img_blur_gray = cv2.threshold(img_blur, 170, 255, cv2.THRESH_BINARY)[1]
     
     contours, hierarchy = cv2.findContours(img_blur_gray, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     
     contours = validContour(contours)
+
+    print('merge...')
     contours = mergeContours(img, contours)
+    print('merge done...')
     
     img_gray = cv2.cvtColor(img_gray, cv2.COLOR_GRAY2BGR)
     digits = []
