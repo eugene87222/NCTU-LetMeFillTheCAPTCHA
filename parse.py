@@ -23,22 +23,21 @@ def toGray(image):
 
 def merge(contours):
     contours.sort(key=lambda x: x[0])
-    boxes = []
+    frame = []
     for i in range(len(contours)):
         x, y, w, h = contours[i]
-        box = cv2.rectangle(np.zeros((60, 110)), (x, y), (x+w, y+h), 1, 1)
-        boxes.append(box)
+        frame.append(cv2.rectangle(np.zeros((60, 110)), (x, y), (x+w, y+h), 1, 1))
 
-    status = np.zeros(len(boxes))
+    status = np.zeros(len(frame))
     intermediate = []
-    for i in range(len(boxes)):
+    for i in range(len(frame)):
         if status[i]:
             continue
-        if i == len(boxes) - 1:
+        if i == len(frame) - 1:
             status[i] = 1
             intermediate.append(contours[i])
             continue
-        intersect = np.logical_and(boxes[i], boxes[i + 1])
+        intersect = np.logical_and(frame[i], frame[i + 1])
         if True in intersect:
             x = min(contours[i][0], contours[i + 1][0])
             y = min(contours[i][1], contours[i + 1][1])
@@ -72,11 +71,13 @@ def mergeContours(image, contours):
         final_contours = merge(contours)
         final_contours = merge(final_contours)
         final_contours = eraseSmall(final_contours)
-        temp = np.array(image)
-        for i in range(len(final_contours)):
-            x, y, w, h = final_contours[i]
-            cv2.rectangle(temp, (x, y), (x+w, y+h), (0, 255, 0), 1)
-        show(temp)
+        
+        # temp = np.array(image)
+        # for i in range(len(final_contours)):
+        #     x, y, w, h = final_contours[i]
+        #     cv2.rectangle(temp, (x, y), (x+w, y+h), (0, 255, 0), 1)
+        # show(temp)
+        
         print(final_contours)
         contours = final_contours
         if len(final_contours) <= 5:
@@ -107,26 +108,22 @@ def parseImage(file, save2Partition, showContours):
     img_blur = cv2.medianBlur(img_gray, 3)
     img_blur_gray = cv2.threshold(img_blur, 170, 255, cv2.THRESH_BINARY)[1]
     
-    contours, hierarchy = cv2.findContours(img_blur_gray, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    
+    contours, hierarchy = cv2.findContours(img_blur_gray, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)    
     contours = validContour(contours)
-    
     print('merge...')
     contours = mergeContours(img, contours)
     print('merge done...')
     
-    img_gray = cv2.cvtColor(img_gray, cv2.COLOR_GRAY2BGR)
+    img_blur_gray = cv2.cvtColor(img_blur_gray, cv2.COLOR_GRAY2BGR)
     digits = []
     for i in range(len(contours)):
         x, y, w, h = contours[i]
-        digit = cv2.resize(img_gray[y:y+h, x:x+w], (28, 28))
-        digit = cv2.medianBlur(digit, 5)
-        digit = cv2.cvtColor(digit, cv2.COLOR_BGR2GRAY)
-        digit = cv2.threshold(digit, 170, 255, cv2.THRESH_BINARY)[1]
+        digit = cv2.resize(img_blur_gray[y:y+h, x:x+w], (28, 28))
+        digit  = cv2.cvtColor(digit, cv2.COLOR_RGB2GRAY)
         digits.append(digit)
         if save2Partition:
             cv2.imwrite(f"{config['PATH']['PARTITION']}/{file}_{i}.jpg", digit)
-        cv2.rectangle(img, (x, y), (x+w, y+h), (0, 255, 0), 1)
+        cv2.rectangle(img, (x, y), (x+w-1, y+h-1), (0, 255, 0), 1)
     
     if showContours:
         show(img)

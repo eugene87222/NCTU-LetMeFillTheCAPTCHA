@@ -1,7 +1,7 @@
 import parse
 import train
-import cv2, time
 import numpy as np
+import cv2, time, sys
 from PIL import Image
 from io import BytesIO
 from getpass import getpass
@@ -53,8 +53,12 @@ def login(driver, ID, passwd, CAPTCHA):
         pass
 
 if __name__ == '__main__':
-    ID = input('Student ID: ')
-    passwd = getpass('Password: ')
+    if len(sys.argv) < 3:
+        ID = input('Student ID: ')
+        passwd = getpass('Password: ')
+    else:
+        ID = sys.argv[1]
+        passwd = sys.argv[2]
 
     driver = openWebsite()
     print('Browser opened')
@@ -62,14 +66,17 @@ if __name__ == '__main__':
     screenshot = getScreenshot(driver)
     print('Screenshot')
 
-    x, y, w, h = [836, 484, 150, 75]
+    x, y, w, h = [836, 494, 150, 75]
     CAPTCHA = screenshot[y:y+h, x:x+w]
+    # cv2.imshow('', CAPTCHA)
+    # cv2.waitKey()
 
     print('Start parsing')
     digits = parse.parseImage(CAPTCHA, False, False)
     print('Finish parsing')
     
     model = train.loadModel('SVM_v2.sav')
+    print(digits[0].shape)
     answer = getAnswer(model, digits)
     print(answer)
 
